@@ -25,13 +25,14 @@ Function.protorype.bind = function(context, ...args) {
     throw TypeError('what is trying to bind is not callable');
   }
   // self 为绑定前的原函数
-  let serf = this;
+  let self = this;
   let fbound = function() {
     // 由于new运算符是先构建对象并将[[protype]]指向构造函数的prototype属性所指向的原型对象，再执行构造函数，此时的对象(this)已经是构造函数原型的一个实例了，因此可以用来判定
     self.apply(this instanceof self ?
       this :
       context, args.concat(Array.prototype.slice.call(arguments)))
   }
+  // 由于bind返回的是一个新函数，如果这部不写的话，上面的 this instanceof self 永远不成立，因为self不在fbound的原型链上
   fbound = Object.create(this.prototype);
   return fbound;
 }

@@ -21,3 +21,16 @@ JavaScript代码执行的整个过程分为两个阶段，代码编译阶段与�
 
 ### Set、Map、WeakSet 和 WeakMap 的区别
 WeekSet 的值和 WeekMap的键都只能是对象，且都是对对象的弱引用，如果对象删除则 WeekSet 和 WeekMap 中也无法访问这些对象，相应的，它们也不支持遍历(因为成员都是弱引用，随时可能消失，遍历机制无法保证成员的存在，很可能刚刚遍历结束，成员就取不到)
+
+### ES5/ES6 的继承除了写法以外还有什么区别
+ES5中的继承，基本实现就是：
+```javascript
+function Sub(...args) {
+    Super.apply(this, args)
+}
+Sub.prototype = new Super()
+Sub.prototype.constructor = Sub
+```
+跟ES6的class继承相比，ES6的实现中，Sub.__proto__ = Super, 而ES5的基本实现中，Sub.__proto__ = Function.prototype。
+
+其实ES6的class只是语法糖，本质上都可以用ES5的语法实现的，通过Babel转译就可以看出 class 的ES5实现是怎么样的

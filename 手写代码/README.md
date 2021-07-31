@@ -107,3 +107,38 @@ function curry(fn, ...args) {
   }
 }
 ```
+### 基于ES5的继承
+一般的实现方法
+```javascript
+function Super() {}
+function Sub() {}
+
+Sub.prototype = new Super();
+Sub.prototype.constructor = Sub;
+```
+存在的问题是：
+1. 子类的原型上只继承了父类的实例属性，应该还要继承父类原型上的属性
+2. 不支持继承父类的静态属性, 比如jQuery的$.ajax就是$构造函数上的一个静态属性
+
+改进后:
+```javascript
+function inherit(Child, Parent) {
+  // 只继承父类原型上的属性, 且存在子类构造函数的原型上
+  Child.prototype = Object.create(Parent.prototype)
+  
+  // 修复constructor
+  Child.prototype.constructor = Child
+
+  // 存储超类, 后续可以在Child的构造函数中执行，以继承父类的实例属性
+  Child.super = Parent
+
+  // 继承静态属性
+  if (Object.setPrototypeOf) {
+    // es6推荐
+    Object.setPrototypeOf(Child, Parent)
+  } else if (Child.__proto__) {
+    // 在es6中被引入，兼容浏览器已有的实现
+    Child.__proto__ = Parent
+  }
+}
+```

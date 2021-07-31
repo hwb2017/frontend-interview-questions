@@ -28,6 +28,7 @@ Function.protorype.bind = function(context, ...args) {
   let self = this;
   let fbound = function() {
     // 由于new运算符是先构建对象并将[[protype]]指向构造函数的prototype属性所指向的原型对象，再执行构造函数，此时的对象(this)已经是构造函数原型的一个实例了，因此可以用来判定
+    // 这里不用 this instanceof fbound 的原因，是因为 fbound 只是函数中的一个临时变量，返回后即销毁，而 self 是通过闭包机制保存在堆中的
     self.apply(this instanceof self ?
       this :
       context, args.concat(Array.prototype.slice.call(arguments)))

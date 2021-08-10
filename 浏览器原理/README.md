@@ -64,3 +64,16 @@ Etag 在感知文件变化上比 Last-Modified 更加准确，优先级也更高
 5. 浏览器进行UI渲染
 
 6. 处理宏任务队列中的剩余宏任务，回到 1
+
+### 浏览器重绘与重排中的队列机制
+很多浏览器会维护一个队列，把所有会引起repaint与reflow的操作放入这个队列，等队列中的操作累积了一定数量，或者到了一定的时间间隔，浏览器就会对这个队列进行批处理。这样就会让多次重绘变成一次。
+
+当js想要获得dom的一些属性时，浏览器为了给出最精确的值，会flush队列，及把缓冲区的数据强行输出。
+像这些属性：
+
+- offsetTop, offsetLeft, offsetWidth, offsetHeight
+- scrollTop/Left/Width/Height
+- clientTop/Left/Width/Height
+- width,height
+
+参考 https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/24

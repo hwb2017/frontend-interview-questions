@@ -77,3 +77,8 @@ Etag 在感知文件变化上比 Last-Modified 更加准确，优先级也更高
 - width,height
 
 参考 https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/24
+
+### 浏览器事件循环和Node事件循环的区别
+参考 https://juejin.cn/post/6844903761949753352#heading-12
+
+从宏任务和微任务的角度来看，Node10及之前的版本，只要宏任务队列里有宏任务，就会执行队列中所有的宏任务后，再执行微任务； Node11 之后，与浏览器的行为一致，每执行完一个宏任务，就执行微任务队列中的所有微任务

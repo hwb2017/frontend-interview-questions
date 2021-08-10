@@ -34,3 +34,18 @@ Sub.prototype.constructor = Sub
 跟ES6的class继承相比，ES6的实现中，Sub.__proto__ = Super, 而ES5的基本实现中，Sub.__proto__ = Function.prototype。
 
 其实ES6的class只是语法糖，本质上都可以用ES5的语法实现的，通过Babel转译就可以看出 class 的ES5实现是怎么样的
+
+### 函数声明与变量声明的优先级关系
+```javascript
+var b = 10;
+(function b(){
+    b = 20;
+    console.log(b); 
+})();
+// 输出
+// ƒ b() {
+//   b = 20;
+//   console.log(b)
+// }
+```
+原因： 声明提前：一个声明在函数体内都是可见的，函数声明优先于变量声明；在非匿名自执行函数中，函数变量为只读状态无法修改

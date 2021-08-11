@@ -49,3 +49,19 @@ var b = 10;
 // }
 ```
 原因： 声明提前：一个声明在函数体内都是可见的，函数声明优先于变量声明；在非匿名自执行函数中，函数变量为只读状态无法修改
+
+### 利用 concat API 通过迭代方法实现数组 flatten
+```javascript
+let arr = [1, 2, [3, 4, 5, [6, 7], 8], 9, 10, [11, [12, 13]]]
+
+const flatten = function (arr) {
+    while (arr.some(item => Array.isArray(item))) {
+        arr = [].concat(...arr)
+    }
+    return arr
+}
+
+console.log(flatten(arr))
+```
+
+主要利用 concat API 的特性，它的参数可以是多个数组或值，最终所有数组里的元素都会解开放到 concat API 左边的数组中

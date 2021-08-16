@@ -142,3 +142,85 @@ function inherit(Child, Parent) {
   }
 }
 ```
+
+### 设计LazyMan类(实现一个类似http中间件的队列)
+题目:
+
+```javascript
+LazyMan('Tony');
+// Hi I am Tony
+
+LazyMan('Tony').sleep(10).eat('lunch');
+// Hi I am Tony
+// 等待了10秒...
+// I am eating lunch
+
+LazyMan('Tony').eat('lunch').sleep(10).eat('dinner');
+// Hi I am Tony
+// I am eating lunch
+// 等待了10秒...
+// I am eating diner
+
+LazyMan('Tony').eat('lunch').eat('dinner').sleepFirst(5).sleep(10).eat('junk food');
+// Hi I am Tony
+// 等待了5秒...
+// I am eating lunch
+// I am eating dinner
+// 等待了10秒...
+// I am eating junk food
+```
+
+回答:
+
+```javascript
+class LazyManClass {
+  constructor(name) {
+    this.name = name
+    this.taskList = []
+    console.log(`Hi I am ${name}`)
+    // 因为存在sleepFirst这样打乱顺序的操作，所以需要通过异步的形式先统筹所有的任务
+    setTimeout(() => {
+      this.next()
+    }, 0)
+  }
+  sleepFirst(time) {
+    const fn = () => {
+      // 使用箭头函数固化this，避免setTimeout中的this指向全局对象
+      setTimeout(() => {
+        console.log(`等待了${time}秒...`)
+        this.next()
+      }, time)
+    }
+    this.taskList.unshift(fn)
+    return this
+  }
+  sleep(time) {
+    const fn = () => {
+      setTimeout(() => {
+        console.log(`等待了${time}秒...`)
+        this.next()
+      }, time)
+    }
+    this.taskList.push(fn)
+    return this
+  }
+  eat(food) {
+    const fn = () => {
+      setTimeout(() => {
+        console.log(`I am eating ${food}`)
+        this.next()
+      })
+      this.taskList.push(fn)
+    }
+    return this
+  }
+  next() {
+    const fn = this.taskList.shift()
+    fn && fn()
+  }
+}
+
+function LazyMan(name) {
+  return new LazyManClass(name)
+}
+```

@@ -65,3 +65,32 @@ console.log(flatten(arr))
 ```
 
 主要利用 concat API 的特性，它的参数可以是多个数组或值，最终所有数组里的元素都会解开放到 concat API 左边的数组中
+
+### 箭头函数和普通函数的区别
+箭头函数是普通函数的简写，可以更优雅的定义一个函数，和普通函数相比，有以下几点差异：
+
+1、函数体内的 this 对象，就是定义时所在的对象，而不是使用时所在的对象。
+
+2、不可以使用 arguments 对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。
+
+3、不可以使用 yield 命令，因此箭头函数不能用作 Generator 函数。
+
+4、不可以使用 new 命令，因为：
+
+- 没有自己的 this，无法调用 call，apply。
+- 没有 prototype 属性 ，而 new 命令在执行时需要将构造函数的 prototype 赋值给新的对象的 __proto__
+
+### 模拟实现一个 Promise.finally
+```javascript
+// finally 实现要点
+// 1. 前面的状态只要不是pending，则一定会进入执行
+// 2. 不接受任何参数(resolve或reject)
+// 3. 除非在回调函数内抛出异常会根据异常来改变 promise 的状态和值，否则它所做的只是把状态和值传递
+Promise.prototype.finally = function(callback) {
+    let P = this.constructor;
+    return this.then(
+        value => P.resolve(callback()).then(() => value),
+        reason => P.resolve(callback()).then(() => {throw reason})
+    )
+}
+```

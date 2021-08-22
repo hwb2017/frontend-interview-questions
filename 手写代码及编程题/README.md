@@ -224,3 +224,18 @@ function LazyMan(name) {
   return new LazyManClass(name)
 }
 ```
+
+### 旋转数组
+给定一个数组，将数组中的元素向右移动 k 个位置，其中 k 是非负数
+
+```javascript
+const rotateArray = (arr, k) => {
+  let prefixArray = [];
+  let k = k % arr.length;
+  while (k > 0) {
+    prefixArray.unshift(arr.pop());
+    k--;
+  }
+  return prefixArray.concat(arr);
+}
+```

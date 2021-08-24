@@ -239,3 +239,41 @@ const rotateArray = (arr, k) => {
   return prefixArray.concat(arr);
 }
 ```
+
+### 防抖与节流
+- 本质: 限制(dom事件监听)函数的执行次数
+- 意义: 避免多余的计算，浪费服务器的计算资源; 一定程度上可以避免安全攻击
+- 区别：节流限制函数在一定时间内只能执行一次；防抖限制函数要在dom事件触发后"冷静"一段时间才能触发
+- 实现:
+
+```javascript
+function debounce(fn, delay) {
+  let timer;
+  return function() {
+    let that = this;
+    let args = arguments;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(function() {
+      fn.apply(that, args);
+    }, delay);
+  };
+}
+function throttle(fn, delay) {
+   let timer;
+   return function() {
+     let that = this;
+     let args = arguments;
+     if (timer) {
+       return;
+     }
+     timer = setTimeout(function() {
+       fn.apply(that, args);
+       timer = null;
+     }, delay);
+   };
+}
+```
+
+参考 https://segmentfault.com/a/1190000018445196 和 https://www.telerik.com/blogs/debouncing-and-throttling-in-javascript

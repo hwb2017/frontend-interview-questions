@@ -1,0 +1,37 @@
+<!-- 参考 https://www.cnblogs.com/lvonve/p/14180283.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>处理中文输入</title>
+</head>
+<body>
+    <input type="text" id="myinput" />
+    <script>
+        function onInput(e) {
+            if (e.target.composing) return;
+            console.log(`input ${e.target.value}`);
+        }
+        function onCompositionStart(e) {
+            e.target.composing = true;
+            console.log('composition start');
+        }
+        function onCompositionEnd(e) {
+            e.target.composing = false;
+            console.log('composition end');
+            trigger(e.target, 'input');
+        }
+        function trigger(el, type) {
+            // 创建标准dom事件可以用 createEvent('HTMLEvents')，创建自定义事件可以用 new CustomEvent() 构造函数
+            const e = document.createEvent('HTMLEvents');
+            e.initEvent(type, true, true);
+            el.dispatchEvent(e);
+        }
+        const input_dom = document.getElementById('myinput');
+        input_dom.addEventListener('input', onInput);
+        input_dom.addEventListener('compositionstart', onCompositionStart);
+        input_dom.addEventListener('compositionend', onCompositionEnd);
+    </script>
+</body>
+</html>

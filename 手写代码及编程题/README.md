@@ -261,18 +261,18 @@ function debounce(fn, delay) {
   };
 }
 function throttle(fn, delay) {
-   let timer;
-   return function() {
-     let that = this;
-     let args = arguments;
-     if (timer) {
-       return;
-     }
-     timer = setTimeout(function() {
-       fn.apply(that, args);
-       timer = null;
-     }, delay);
-   };
+    let timer;
+    return function() {
+      let that = this;
+      let args = arguments;
+    if (timer) {
+      return;
+    }
+    timer = setTimeout(function() {
+      fn.apply(that, args);
+      timer = null;
+    }, delay);
+  };
 }
 ```
 

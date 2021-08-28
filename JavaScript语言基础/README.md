@@ -103,3 +103,21 @@ Promise.prototype.finally = function(callback) {
 `array.forEach(function(currentValue, index, arr), thisValue)`
 
 它不是普通的 for 循环的语法糖，还有诸多参数和上下文需要在执行的时候考虑进来，这里可能拖慢性能
+
+### 对象作为函数形参
+对象传参，是复制了一个新的引用指向对象，如果这个引用副本被修改指向新的对象，则不会改变原来的对象
+```javascript
+// webSite引用地址的值copy给a了
+function changeObjProperty(a) {
+  // 改变对应地址内的对象属性值
+  a.siteUrl = "http://www.baidu.com"
+  // 变量a指向新的地址 以后的变动和旧地址无关
+  a = new Object()
+  a.siteUrl = "http://www.google.com"
+  a.name = 456
+} 
+var webSite = new Object();
+webSite.name = '123'
+changeObjProperty(webSite);
+console.log(webSite); // {name: 123, siteUrl: 'http://www.baidu.com'}
+```

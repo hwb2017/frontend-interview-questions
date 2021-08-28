@@ -6,3 +6,7 @@
 ### Vue3中使用 Proxy 代替 Object.defineProperty 来实现响应性有什么好处
 1. Object.defineProperty只能劫持对象的属性，从而需要对每个对象，每个属性进行遍历，如果，属性值是对象，还需要深度遍历。Proxy可以劫持整个对象，并返回一个新的对象。
 2. Proxy不仅可以代理对象，还可以代理数组。还可以代理动态增加的属性。
+
+### Vue 和 React 的 diff 算法是如何从 O(n^3) 优化到 O(n) 的，这两个时间复杂度又是如何计算出来的?
+
+参考 https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/151

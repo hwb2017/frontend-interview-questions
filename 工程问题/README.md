@@ -1,0 +1,2 @@
+## 图片懒加载
+图片懒加载即图片的CSSOM对象进入视口时才触发对图片的加载(设置src属性)，常用的方法是 getBoundingClientRect API + Scroll with Throttle + DataSet API，或者使用 IntersectionObserver API + DataSet API，参考 https://github.com/shfshanyue/Daily-Question/issues/1

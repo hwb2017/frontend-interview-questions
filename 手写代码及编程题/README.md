@@ -30,12 +30,12 @@ Function.protorype.bind = function(context, ...args) {
   // self 为绑定前的原函数
   let self = this;
   let fbound = function() {
+    // 在bind方法中，bind返回的函数如果作为构造函数搭配 new 关键字出现，则绑定的this就要被忽略，this要绑定在实例上。也就是说，new关键字的优先级要高于bind绑定
     // 由于new运算符是先构建对象并将[[protype]]指向构造函数的prototype属性所指向的原型对象，再执行构造函数，此时的对象(this)已经是构造函数原型的一个实例了，因此可以用来判定
-    // 这里不用 this instanceof fbound 的原因，是因为 fbound 只是函数中的一个临时变量，返回后即销毁，而 self 是通过闭包机制保存在堆中的
-    self.apply(this instanceof self ? this : context, args.concat(Array.prototype.slice.call(arguments)))
+    return self.apply(this instanceof fbound ? this : context, args.concat(Array.prototype.slice.call(arguments)))
   }
-  // 由于bind返回的是一个新函数，如果这部不写的话，上面的 this instanceof self 永远不成立，因为self不在fbound的原型链上
-  fbound = Object.create(this.prototype);
+  // 保证bind返回的新函数，其作为构造函数时，创建的对象仍然是原(构造)函数的一个实例
+  fbound.prototype = this.prototype;
   return fbound;
 }
 ```
@@ -43,17 +43,20 @@ Function.protorype.bind = function(context, ...args) {
 ```javascript
 Function.prototype.call = function(context, ...args) {
   let context = context ?? window;
-  let context.fn = this;
-  let result = eval('context.fn(...args)');
+  // 使用Symbol保证不覆盖context对象上相同键名的键值对，利用Symbol的唯一性
+  let fnKey = Symbol('fnKey');
+  context[fnKey] = this;
+  let result = context[fnKey](...args);
   // call 和 apply 都是临时挂载到第一个参数所指向的对象上，执行完以后要解除挂载
-  delete context.fn;
+  delete context[fnKey];
   return result;
 }
 Function.prototype.apply = function(context, args) {
   let context = context ?? window;
-  let context.fn = this;
-  let result = eval('context.fn(...args)');
-  delete context.fn;
+  let fnKey = Symbol('fnKey');
+  context[fnKey] = this;
+  let result = context[fnKey](...args);
+  delete context[fnKey];
   return result;
 }
 ```

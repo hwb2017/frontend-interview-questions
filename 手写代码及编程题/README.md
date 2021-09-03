@@ -18,7 +18,10 @@ function newFactory(ctor, ...args) {
 ### 手写 bind 函数
 1. 对于普通函数，绑定this指向
 2. 对于构造函数，要保证在原函数的原型对象上的属性不丢失
+
 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
+
+参考 https://github.com/shfshanyue/Daily-Question/issues/674
 ```javascript
 Function.protorype.bind = function(context, ...args) {
   if (typepf this !== 'function') {
@@ -29,9 +32,7 @@ Function.protorype.bind = function(context, ...args) {
   let fbound = function() {
     // 由于new运算符是先构建对象并将[[protype]]指向构造函数的prototype属性所指向的原型对象，再执行构造函数，此时的对象(this)已经是构造函数原型的一个实例了，因此可以用来判定
     // 这里不用 this instanceof fbound 的原因，是因为 fbound 只是函数中的一个临时变量，返回后即销毁，而 self 是通过闭包机制保存在堆中的
-    self.apply(this instanceof self ?
-      this :
-      context, args.concat(Array.prototype.slice.call(arguments)))
+    self.apply(this instanceof self ? this : context, args.concat(Array.prototype.slice.call(arguments)))
   }
   // 由于bind返回的是一个新函数，如果这部不写的话，上面的 this instanceof self 永远不成立，因为self不在fbound的原型链上
   fbound = Object.create(this.prototype);
@@ -44,6 +45,7 @@ Function.prototype.call = function(context, ...args) {
   let context = context ?? window;
   let context.fn = this;
   let result = eval('context.fn(...args)');
+  // call 和 apply 都是临时挂载到第一个参数所指向的对象上，执行完以后要解除挂载
   delete context.fn;
   return result;
 }

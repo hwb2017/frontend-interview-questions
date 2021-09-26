@@ -9,3 +9,6 @@ https://segmentfault.com/q/1010000000146284/a-1020000000146319
 
 ### Webpack HMR原理详解
 参考 https://zhuanlan.zhihu.com/p/30669007
+
+### npm ci 与 npm i 的区别
+npm ci 更适用于持续集成场景下的依赖安装, 参考 https://cloud.tencent.com/developer/section/1490280

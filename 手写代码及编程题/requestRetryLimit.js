@@ -27,26 +27,21 @@ const promisifyHttpsGet = (url) => {
   })
 }
 
-// 第二版，错误也是当作正常结果返回，没有立即抛出，没有异常堆栈信息
+// 第二版，async/await + try/catch
 const requestWithRetryLimit1 = async (url, limit = 3) => {
-  let result
   try {
-    result = await promisifyHttpsGet(url)
+    return await promisifyHttpsGet(url)
   } catch(error) {
     if (--limit > 0) {
       console.log(`request failed, ${limit} try left...`)
-      result = await requestWithRetryLimit1(url, limit)
+      return await requestWithRetryLimit1(url, limit)
     } else {
-      result = error
+      return Promise.reject(error)
     }
   }
-  return result
 }
 
-// (async() => {
-//   let result = await requestWithRetryLimit1('https://www.efarrwwrew.com', 5)
-//   console.log(result)
-// })()
+requestWithRetryLimit1('https://www.efarrwwrew.com', 5).then(res => console.log(res)).catch(err => console.log(err))
 
 // 第三版，使用串行promise代替递归的写法
 const requestWithRetryLimit2 = (url, limit = 3) => {
@@ -68,4 +63,4 @@ const requestWithRetryLimit2 = (url, limit = 3) => {
   )
 }
 
-requestWithRetryLimit2('https://www.baidu.com', 3).then(res => console.log(res)).catch(err => console.log(err))
+// requestWithRetryLimit2('https://www.baidu.com', 3).then(res => console.log(res)).catch(err => console.log(err))
